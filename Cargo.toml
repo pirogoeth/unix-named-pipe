@@ -5,6 +5,10 @@ version = "0.1.0"
 license = "MIT"
 authors = ["Sean Johnson <sean.johnson@maio.me>"]
 edition = "2018"
+readme = "README.md"
+
+keywords = ["unix pipe", "unix fifo", "named pipe", "fifo", "mkfifo"]
+categories = ["external-ffi-bindings", "os", "os::unix-apis"]
 
 documentation = "https://sjohnson.maiome.xyz/unix-named-pipe"
 homepage = "https://glow.dev.maio.me/sjohnson/unix-named-pipe"

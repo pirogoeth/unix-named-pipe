@@ -1,6 +1,11 @@
 # unix-named-pipe
 
-A library to ease creation of named pipes on the Unix platform
+[![pipeline status](https://glow.dev.maio.me/sjohnson/unix-named-pipe/badges/master/pipeline.svg)](https://glow.dev.maio.me/sjohnson/unix-named-pipe/commits/master)
+[![coverage report](https://glow.dev.maio.me/sjohnson/unix-named-pipe/badges/master/coverage.svg)](https://glow.dev.maio.me/sjohnson/unix-named-pipe/commits/master)
+
+---
+
+`unix-named-pipe` is a library to ease the creation and usage of named pipes on the Unix platform
 
 ## Usage
 
