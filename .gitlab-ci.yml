@@ -1,0 +1,76 @@
+---
+
+stages:
+  - test
+  - cover
+  - publish
+
+.before_script: &cargo_home
+  - export CARGO_HOME="$PWD/cargo"
+
+cargo tests amd64:
+  image: containers.dev.maio.me/sjohnson/containers/rust-gcc:latest
+  stage: test
+  tags:
+    - amd64
+  before_script: *cargo_home
+  script:
+    - cargo clean
+    - RUSTFLAGS='-C link-dead-code' cargo test
+  cache:
+    policy: push
+    paths:
+      - cargo
+      - target
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[skip[-_ ]tests\]/i
+
+kcov cover amd64:
+  image: containers.dev.maio.me/sjohnson/containers/kcov:latest
+  stage: cover
+  tags:
+    - amd64
+  dependencies:
+    - cargo tests amd64
+  before_script: *cargo_home
+  script:
+    - mkdir -p ./coverage/units ./coverage/doctest
+    - "find ./target/debug -maxdepth 1 -regex '.*_test-[^.]*$' | xargs -n1 /app/bin/kcov --exclude-pattern=${CARGO_HOME} ./coverage/units"
+    - "find ./target/debug -maxdepth 1 -regex '.*${CI_PROJECT_NAME}-[^.]*$' | xargs -n1 /app/bin/kcov --exclude-pattern=${CARGO_HOME} ./coverage/doctest"
+    - /app/bin/kcov --merge ./coverage ./coverage/units ./coverage/doctest
+    - cat ./coverage/kcov-merged/coverage.json | jq '.percent_covered'
+  coverage: '/"\d+\.\d+"/'
+  cache:
+    policy: pull
+    paths:
+      - cargo
+      - target
+  artifacts:
+    name: coverage
+    paths:
+      - coverage
+
+pages:
+  image: containers.dev.maio.me/sjohnson/containers/rust-gcc:latest
+  stage: publish
+  tags:
+    - amd64
+  dependencies:
+    - kcov cover amd64
+  before_script: *cargo_home
+  script:
+    - cargo doc --target-dir . --no-deps --lib
+    - mv doc public
+    - mv coverage public/coverage
+    - cp -v ci/docs/index.html public/index.html
+  cache:
+    policy: pull
+    paths:
+      - cargo
+      - target
+  artifacts:
+    paths:
+      - public
+  only:
+    - master

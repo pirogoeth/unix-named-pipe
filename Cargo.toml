@@ -1,0 +1,18 @@
+[package]
+name = "unix-named-pipe"
+description = "Ease creation of named pipes on Unix platform"
+version = "0.1.0"
+license = "MIT"
+authors = ["Sean Johnson <sean.johnson@maio.me>"]
+edition = "2018"
+
+documentation = "https://sjohnson.maiome.xyz/unix-named-pipe"
+homepage = "https://glow.dev.maio.me/sjohnson/unix-named-pipe"
+repository = "https://glow.dev.maio.me/sjohnson/unix-named-pipe"
+
+[dependencies]
+errno = "0.2.4"
+libc = "0.2.43"
+
+[dev-dependencies]
+fs2 = "0.4.3"
