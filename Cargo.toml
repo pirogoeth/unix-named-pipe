@@ -7,7 +7,7 @@ authors = ["Sean Johnson <sean.johnson@maio.me>"]
 edition = "2018"
 readme = "README.md"
 
-keywords = ["unix pipe", "unix fifo", "named pipe", "fifo", "mkfifo"]
+keywords = ["unix", "named-pipe", "fifo", "mkfifo"]
 categories = ["external-ffi-bindings", "os", "os::unix-apis"]
 
 documentation = "https://sjohnson.maiome.xyz/unix-named-pipe"
