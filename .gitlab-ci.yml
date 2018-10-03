@@ -36,8 +36,8 @@ kcov cover amd64:
   before_script: *cargo_home
   script:
     - mkdir -p ./coverage/units ./coverage/doctest
-    - "find ./target/debug -maxdepth 1 -regex '.*_test-[^.]*$' | xargs -n1 /app/bin/kcov --exclude-pattern=${CARGO_HOME} ./coverage/units"
-    - "find ./target/debug -maxdepth 1 -regex '.*${CI_PROJECT_NAME}-[^.]*$' | xargs -n1 /app/bin/kcov --exclude-pattern=${CARGO_HOME} ./coverage/doctest"
+    - "find ./target/debug -maxdepth 1 -regex .\*${CI_PROJECT_NAME}-\[\^.\]\*\$ | xargs -n1 /app/bin/kcov --exclude-pattern=${CARGO_HOME} ./coverage/doctest"
+    - "find ./target/debug -maxdepth 1 -regex .\*_test-\[\^.\]\*\$ | xargs -n1 /app/bin/kcov --exclude-pattern=${CARGO_HOME} ./coverage/units"
     - /app/bin/kcov --merge ./coverage ./coverage/units ./coverage/doctest
     - cat ./coverage/kcov-merged/coverage.json | jq '.percent_covered'
   coverage: '/"\d+\.\d+"/'

@@ -50,7 +50,8 @@ pub fn create<P: AsRef<Path>>(path: P, mode: Option<u32>) -> io::Result<()> {
     }
 }
 
-/// Opens a named pipe for reading
+/// Opens a named pipe for reading. The file is opened for non-blocking reads
+/// a la `libc`'s `O_NONBLOCK`.
 pub fn open_read<P: AsRef<Path>>(path: P) -> io::Result<File> {
     OpenOptions::new()
         .read(true)
@@ -58,7 +59,8 @@ pub fn open_read<P: AsRef<Path>>(path: P) -> io::Result<File> {
         .open(path)
 }
 
-/// Opens a named pipe for writing
+/// Opens a named pipe for writing. The file is opened for non-blocking writes
+/// a la `libc`'s `O_NONBLOCK`.
 pub fn open_write<P: AsRef<Path>>(path: P) -> io::Result<File> {
     OpenOptions::new()
         .write(true)
