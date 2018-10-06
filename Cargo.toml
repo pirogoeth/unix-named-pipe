@@ -1,7 +1,7 @@
 [package]
 name = "unix-named-pipe"
 description = "Ease creation of named pipes on Unix platform"
-version = "0.1.0"
+version = "0.2.0"
 license = "MIT"
 authors = ["Sean Johnson <sean.johnson@maio.me>"]
 edition = "2018"
@@ -10,7 +10,7 @@ readme = "README.md"
 keywords = ["unix", "named-pipe", "fifo", "mkfifo"]
 categories = ["external-ffi-bindings", "os", "os::unix-apis"]
 
-documentation = "https://sjohnson.maiome.xyz/unix-named-pipe"
+documentation = "https://docs.rs/crate/unix-named-pipe"
 homepage = "https://glow.dev.maio.me/sjohnson/unix-named-pipe"
 repository = "https://glow.dev.maio.me/sjohnson/unix-named-pipe"
 
