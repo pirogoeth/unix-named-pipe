@@ -13,14 +13,14 @@ pub trait FileFIFOExt {
 impl FileFIFOExt for fs::File {
     /// Returns a wrapped boolean to designate if the underlying
     /// file is a FIFO device.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// # extern crate unix_named_pipe;
     /// # use std::fs;
     /// use unix_named_pipe::*;
-    /// 
+    ///
     /// # let file_name = "/tmp/fifo.5";
     /// # create(file_name, None).expect("could not create fifo");
     /// let file = open_read(file_name).expect("could not open fifo for reading");
