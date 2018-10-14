@@ -19,4 +19,6 @@ errno = "0.2.4"
 libc = "0.2.43"
 
 [dev-dependencies]
+ctrlc = "3.1.1"
 fs2 = "0.4.3"
+rand = "0.5.5"
