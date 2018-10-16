@@ -29,12 +29,13 @@ let write_file = unix_named_pipe::open_write(filename)?;
 
 ## Examples
 
-Some examples are provided in the `examples` directory.
+Some examples are provided in the `examples` directory. There are examples for both fixed-size messages and
+for variable-sized messages
 To start the example client and server, launch the server first to begin reading and then launch the client:
 
 ```shell
-cargo run --example server -- /tmp/pipe
-cargo run --example client -- /tmp/pipe
+cargo run --example fixsz_server -- /tmp/pipe
+cargo run --example fixsz_client -- /tmp/pipe
 ```
 
 ## Contributing
