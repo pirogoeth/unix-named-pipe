@@ -5,15 +5,23 @@
 //! to stdout.
 
 extern crate ctrlc;
+#[macro_use]
+extern crate miniserde;
 extern crate unix_named_pipe;
 
+use miniserde::json;
 use std::env;
 use std::fs;
-use std::io::{self, Read};
+use std::io::{self, BufRead};
 use std::path::Path;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use unix_named_pipe::FileFIFOExt;
+
+#[derive(Debug, MiniDeserialize)]
+struct Message {
+    numbers: Vec<u8>,
+}
 
 fn main() {
     let pipe_path = env::args()
@@ -23,23 +31,17 @@ fn main() {
 
     // Set up a keyboard interrupt handler so we can remove the pipe when
     // the process is shut down.
-    let running = Arc::new(AtomicBool::new(true));
-    let r = running.clone();
-
-    ctrlc::set_handler(move || {
-        r.store(false, Ordering::SeqCst);
-    })
-    .expect("could not set up keyboard interrupt handler");
+    let running = make_loop_flag();
 
     // Open the pipe file for reading
-    let mut file = try_open(&pipe_path).expect("could not open pipe for reading");
+    let file = try_open(&pipe_path).expect("could not open pipe for reading");
+    let mut reader = io::BufReader::new(file);
 
     // Loop reading from the pipe until a keyboard interrupt is received
     while running.load(Ordering::SeqCst) {
-        let mut payload: [u8; 2] = [0; 2];
-
         // If an error occurs during read, panic
-        let res = file.read(&mut payload);
+        let mut line = String::new();
+        let res = reader.read_line(&mut line);
         if let Err(err) = res {
             // Named pipes, by design, only support nonblocking reads and writes.
             // If a read would block, an error is thrown, but we can safely ignore it.
@@ -48,17 +50,29 @@ fn main() {
                 _ => panic!(format!("error while reading from pipe: {:?}", err)),
             }
         } else if let Ok(count) = res {
-            if count != payload.len() {
-                // If there is no data yet, just `continue` and try again.
+            if count == 0 {
                 continue;
             } else {
-                let rand_num = payload[0];
-                println!("got data from client: {}", rand_num);
+                let payload: Message = json::from_str(&line).expect("could not deserialize line");
+                println!("got message from client: {:?}", payload);
             }
         }
     }
 
     fs::remove_file(&pipe_path).expect("could not remove pipe during shutdown");
+}
+
+fn make_loop_flag() -> Arc<AtomicBool> {
+    let running = Arc::new(AtomicBool::new(true));
+    let r = running.clone();
+
+    ctrlc::set_handler(move || {
+        println!("keyboard interrupted: stopping read loop");
+        r.store(false, Ordering::SeqCst);
+    })
+    .expect("could not set up keyboard interrupt handler");
+
+    return running;
 }
 
 /// Tries to open the pipe at `pipe_path`.
